@@ -194,6 +194,99 @@ export default class UI extends Module {
   }
 
   /**
+   * All clicks on the redactor zone
+   *
+   * @param {MouseEvent} event
+   *
+   * @description
+   * 1. Save clicked Block as a current {@link BlockManager#currentNode}
+   *      it uses for the following:
+   *      - add CSS modifier for the selected Block
+   *      - on Enter press, we make a new Block under that
+   *
+   * 2. Move and show the Toolbar
+   *
+   * 3. Set a Caret
+   *
+   * 4. By clicks on the Editor's bottom zone:
+   *      - if last Block is empty, set a Caret to this
+   *      - otherwise, add a new empty Block and set a Caret to that
+   *
+   * 5. Hide the Inline Toolbar
+   *
+   * @see selectClickedBlock
+   *
+   */
+  public redactorHovered(event: MouseEvent): void {
+    if (!Selection.isCollapsed) {
+      return;
+    }
+
+    let clickedNode = event.target as HTMLElement;
+
+    /**
+     * If click was fired is on Editor`s wrapper, try to get clicked node by elementFromPoint method
+     */
+    if (clickedNode === this.nodes.redactor) {
+      clickedNode = document.elementFromPoint(event.clientX, event.clientY) as HTMLElement;
+    }
+
+    /**
+     * Select clicked Block as Current
+     */
+    try {
+      /**
+       * Renew Current Block
+       */
+      this.Editor.BlockManager.setCurrentBlockByChildNode(clickedNode);
+
+      /**
+       * Highlight Current Node
+       */
+      this.Editor.BlockManager.highlightCurrentNode();
+    } catch (e) {
+    }
+
+    /**
+     * If click was fired is on Editor`s wrapper, try to get clicked node by elementFromPoint method
+     */
+    event.stopImmediatePropagation();
+    event.stopPropagation();
+
+    /**
+     * Move and open toolbar
+     */
+    this.Editor.Toolbar.open();
+
+    /**
+     * Hide the Plus Button
+     */
+    this.Editor.Toolbar.plusButton.hide();
+
+    if (!this.Editor.BlockManager.currentBlock) {
+      this.Editor.BlockManager.insert();
+    }
+
+    /**
+     * Show the Plus Button if:
+     * - Block is an initial-block (Text)
+     * - Block is empty
+     */
+    const isInitialBlock = this.Editor.Tools.isInitial(this.Editor.BlockManager.currentBlock.tool);
+
+    if (isInitialBlock) {
+      /**
+       * Check isEmpty only for paragraphs to prevent unnecessary tree-walking on Tools with many nodes (for ex. Table)
+       */
+      const isEmptyBlock = this.Editor.BlockManager.currentBlock.isEmpty;
+
+      if (isEmptyBlock) {
+        this.Editor.Toolbar.plusButton.show();
+      }
+    }
+  }
+
+  /**
    * Check for mobile mode and cache a result
    */
   private checkIsMobile() {
@@ -264,6 +357,12 @@ export default class UI extends Module {
       this.nodes.redactor,
       'click',
       (event) => this.redactorClicked(event as MouseEvent),
+      false,
+    );
+    this.Editor.Listeners.on(
+      this.nodes.redactor,
+      'mouseenter',
+      (event) => this.redactorHovered(event as MouseEvent),
       false,
     );
     this.Editor.Listeners.on(document, 'keydown', (event) => this.documentKeydown(event as KeyboardEvent), true);
@@ -373,6 +472,7 @@ export default class UI extends Module {
    * @param event
    */
   private enterPressed(event: KeyboardEvent): void {
+
     const { BlockManager, BlockSelection, Caret, BlockSettings, ConversionToolbar } = this.Editor;
     const hasPointerToBlock = BlockManager.currentBlockIndex >= 0;
 
@@ -460,6 +560,7 @@ export default class UI extends Module {
      * We can create a new block
      */
     if (hasPointerToBlock && (event.target as HTMLElement).tagName === 'BODY') {
+
       /**
        * Insert initial typed Block
        */

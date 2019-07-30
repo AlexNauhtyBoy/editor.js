@@ -157,7 +157,6 @@ export default class Blocks {
       previousBlock.holder.insertAdjacentElement('afterend', block.holder);
     } else {
       const nextBlock = this.blocks[index + 1];
-
       if (nextBlock) {
         nextBlock.holder.insertAdjacentElement('beforebegin', block.holder);
       } else {

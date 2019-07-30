@@ -160,6 +160,15 @@ export default class BlockEvents extends Module {
   }
 
   /**
+   * Mouse up on Block:
+   * - shows Inline Toolbar if something selected
+   */
+  public mouseEnter(event): void {
+    const { UI } = this.Editor;
+    UI.redactorHovered(event);
+  }
+
+  /**
    * Set up mouse selection handlers
    *
    * @param {MouseEvent} event

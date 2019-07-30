@@ -368,6 +368,8 @@ export default class Toolbox extends Module {
      */
     const {currentBlock} = BlockManager;
 
+    console.log('insertNewBlock');
+
     let newBlock;
 
     if (currentBlock.isEmpty) {

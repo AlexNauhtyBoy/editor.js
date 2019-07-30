@@ -40,7 +40,6 @@ export default class BlockManager extends Module {
     if (this._blocks[newIndex]) {
       this._blocks[newIndex].willSelect();
     }
-
     this._currentBlockIndex = newIndex;
   }
 
@@ -241,8 +240,8 @@ export default class BlockManager extends Module {
 
     if (needToFocus) {
       this.currentBlockIndex = index;
+      this.Editor.Caret.setToBlock(block);
     }
-
     return block;
   }
 
@@ -443,6 +442,8 @@ export default class BlockManager extends Module {
   ): Block {
     const block = this.composeBlock(toolName, data);
 
+    console.log('бонжур');
+
     this._blocks.insert(this.currentBlockIndex, block, true);
 
     return block;
@@ -601,6 +602,7 @@ export default class BlockManager extends Module {
     Listeners.on(block.holder, 'mouseup', (event) => BlockEvents.mouseUp(event));
     Listeners.on(block.holder, 'mousedown', (event: MouseEvent) => BlockEvents.mouseDown(event));
     Listeners.on(block.holder, 'keyup', (event) => BlockEvents.keyup(event));
+    Listeners.on(block.holder, 'mouseenter', (event) => BlockEvents.mouseEnter(event));
     Listeners.on(block.holder, 'dragover', (event) => BlockEvents.dragOver(event as DragEvent));
     Listeners.on(block.holder, 'dragleave', (event) => BlockEvents.dragLeave(event as DragEvent));
   }

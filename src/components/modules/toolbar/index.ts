@@ -1,5 +1,6 @@
 import Module from '../../__module';
 import $ from '../../dom';
+import DeleteTune from '../../block-tunes/block-tune-delete';
 
 /**
  *
@@ -153,7 +154,7 @@ export default class Toolbar extends Module {
      */
     this.nodes.blockActionsButtons = $.make('div', this.CSS.blockActionsButtons);
     this.nodes.settingsToggler  = $.make('span', this.CSS.settingsToggler);
-    const settingsIcon = $.svg('dots', 18, 4);
+    const settingsIcon = $.svg('cross', 12, 12);
 
     $.append(this.nodes.settingsToggler, settingsIcon);
     $.append(this.nodes.blockActionsButtons, this.nodes.settingsToggler);
@@ -315,10 +316,7 @@ export default class Toolbar extends Module {
    * Clicks on the Block Settings toggler
    */
   private settingsTogglerClicked(): void {
-    if (this.Editor.BlockSettings.opened) {
-      this.Editor.BlockSettings.close();
-    } else {
-      this.Editor.BlockSettings.open();
-    }
+    const currentBlock = this.Editor.BlockManager.currentBlockIndex;
+    this.Editor.BlocksAPI.delete(currentBlock);
   }
 }

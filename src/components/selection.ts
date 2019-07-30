@@ -116,7 +116,7 @@ export default class SelectionUtils {
     const lengthOfWholeText = targetText.length;
     const lengthOfCopiedText = copiedFragment.textContent.length;
 
-    return lengthOfCopiedText / lengthOfWholeText > 0.85;
+    return lengthOfCopiedText / lengthOfWholeText > 1;
   }
 
   /**

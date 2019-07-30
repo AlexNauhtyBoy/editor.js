@@ -269,7 +269,8 @@ export default class RectangleSelection extends Module {
 
     const rectIsOnRighSideOfredactor = this.startX > rightPos && this.mouseX > rightPos;
     const rectISOnLeftSideOfRedactor = this.startX < leftPos && this.mouseX < leftPos;
-    this.rectCrossesBlocks = !(rectIsOnRighSideOfredactor || rectISOnLeftSideOfRedactor);
+
+    this.rectCrossesBlocks = (!rectIsOnRighSideOfredactor || !rectISOnLeftSideOfRedactor);
 
     if (!this.isRectSelectionActivated) {
       this.rectCrossesBlocks = false;
@@ -376,6 +377,7 @@ export default class RectangleSelection extends Module {
    * @param index - index of block in redactor
    */
   private addBlockInSelection(index) {
+    console.log(this.rectCrossesBlocks);
     if (this.rectCrossesBlocks) {
       this.Editor.BlockSelection.selectBlockByIndex(index);
     }
@@ -387,6 +389,7 @@ export default class RectangleSelection extends Module {
    * @param {object} index - index of new block in the reactor
    */
   private trySelectNextBlock(index) {
+
     const sameBlock = this.stackOfSelected[this.stackOfSelected.length - 1] === index;
     const sizeStack = this.stackOfSelected.length;
     const down = 1, up = -1, undef = 0;
@@ -401,7 +404,6 @@ export default class RectangleSelection extends Module {
     const selectionInUpDirection = index < this.stackOfSelected[sizeStack - 1] && direction === up;
     const generalSelection = selectionInDownDurection || selectionInUpDirection || direction === undef;
     const reduction = !generalSelection;
-
     // When the selection is too fast, some blocks do not have time to be noticed. Fix it.
     if (!reduction && (index > this.stackOfSelected[sizeStack - 1] ||
       this.stackOfSelected[sizeStack - 1] === undefined)) {

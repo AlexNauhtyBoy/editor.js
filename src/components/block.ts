@@ -48,6 +48,7 @@ export default class Block {
       wrapperStretched: 'ce-block--stretched',
       content: 'ce-block__content',
       focused: 'ce-block--focused',
+      hovered: 'ce-block--hovered',
       selected: 'ce-block--selected',
       dropTarget: 'ce-block--drop-target',
     };
@@ -245,6 +246,10 @@ export default class Block {
    */
   set focused(state: boolean) {
     this.holder.classList.toggle(Block.CSS.focused, state);
+  }
+
+  set hovered(state: boolean) {
+    this.holder.classList.toggle(Block.CSS.hovered, state);
   }
 
   /**
