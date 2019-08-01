@@ -154,7 +154,8 @@ export default class Toolbar extends Module {
      */
     this.nodes.blockActionsButtons = $.make('div', this.CSS.blockActionsButtons);
     this.nodes.settingsToggler  = $.make('span', this.CSS.settingsToggler);
-    const settingsIcon = $.svg('cross', 12, 12);
+    // tslint:disable-next-line:max-line-length
+    const settingsIcon = $.svgFromString('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" [attr.fill]="color"><path d="M12.00025,11.29325 L15.18225,8.11125 L15.88925,8.81825 L12.70725,12.00025 L15.88925,15.18225 L15.18225,15.88925 L12.00025,12.70725 L8.81825,15.89025 L8.11125,15.18325 L11.29325,12.00025 L8.11025,8.81825 L8.81725,8.11125 L12.00025,11.29325 Z M20.48525,20.48525 C15.79925,25.17225 8.20125,25.17225 3.51525,20.48525 C-1.17175,15.79925 -1.17175,8.20125 3.51525,3.51525 C8.20125,-1.17175 15.79925,-1.17175 20.48525,3.51525 C25.17225,8.20125 25.17225,15.79925 20.48525,20.48525 Z M19.77825,19.77825 C24.07425,15.48225 24.07425,8.51825 19.77825,4.22225 C15.48225,-0.07375 8.51825,-0.07375 4.22225,4.22225 C-0.07375,8.51825 -0.07375,15.48225 4.22225,19.77825 C8.51825,24.07425 15.48225,24.07425 19.77825,19.77825 Z"/></svg>\n');
 
     $.append(this.nodes.settingsToggler, settingsIcon);
     $.append(this.nodes.blockActionsButtons, this.nodes.settingsToggler);

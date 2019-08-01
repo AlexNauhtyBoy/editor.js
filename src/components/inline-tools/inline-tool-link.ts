@@ -286,6 +286,8 @@ export default class LinkInlineTool implements InlineTool {
     this.selection.restore();
     this.selection.removeFakeBackground();
 
+    console.log(value);
+
     this.insertLink(value);
 
     /**
@@ -319,6 +321,7 @@ export default class LinkInlineTool implements InlineTool {
   private prepareLink(link: string): string {
     link = link.trim();
     link = this.addProtocol(link);
+    console.log(link);
     return link;
   }
 
@@ -356,6 +359,8 @@ export default class LinkInlineTool implements InlineTool {
    * @param {string} link - "href" value
    */
   private insertLink(link: string): void {
+
+    console.log(link);
 
     /**
      * Edit all link, not selected part

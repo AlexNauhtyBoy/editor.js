@@ -94,6 +94,14 @@ export default class Dom {
     return icon;
   }
 
+  public static svgFromString(svg: string): Element {
+    const div = document.createElement('div');
+    div.innerHTML = svg.trim();
+
+    // Change this to div.childNodes to support multiple top-level nodes
+    return div.firstElementChild;
+  }
+
   /**
    * Append one or several elements to the parent
    *
