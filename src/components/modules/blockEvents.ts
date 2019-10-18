@@ -6,7 +6,6 @@ import _ from '../utils';
 import SelectionUtils from '../selection';
 
 export default class BlockEvents extends Module {
-
   /**
    * All keydowns on Block
    * @param {KeyboardEvent} event - keydown
@@ -78,7 +77,8 @@ export default class BlockEvents extends Module {
        * Allow to use shortcuts with selected blocks
        * @type {boolean}
        */
-      const isShortcut = event.ctrlKey || event.metaKey || event.altKey || event.shiftKey;
+      const isShortcut =
+        event.ctrlKey || event.metaKey || event.altKey || event.shiftKey;
 
       if (!isShortcut) {
         this.Editor.BlockManager.clearFocused();
@@ -93,7 +93,6 @@ export default class BlockEvents extends Module {
    * - shows conversion toolbar with 85% of block selection
    */
   public keyup(event): void {
-
     /**
      * If shift key was pressed some special shortcut is used (eg. cross block selection via shift + arrows)
      */
@@ -127,7 +126,12 @@ export default class BlockEvents extends Module {
    * - shows Inline Toolbar if something selected
    */
   public mouseUp(event): void {
-    const { InlineToolbar, ConversionToolbar, BlockManager, BlockSelection } = this.Editor;
+    const {
+      InlineToolbar,
+      ConversionToolbar,
+      BlockManager,
+      BlockSelection,
+    } = this.Editor;
     const block = BlockManager.getBlock(event.target);
 
     /**
@@ -187,7 +191,12 @@ export default class BlockEvents extends Module {
      */
     this.Editor.BlockSelection.clearSelection(event);
 
-    const { BlockManager, Tools, ConversionToolbar, InlineToolbar } = this.Editor;
+    const {
+      BlockManager,
+      Tools,
+      ConversionToolbar,
+      InlineToolbar,
+    } = this.Editor;
     const currentBlock = BlockManager.currentBlock;
 
     if (!currentBlock) {
@@ -202,9 +211,14 @@ export default class BlockEvents extends Module {
     const shiftKey = event.shiftKey,
       direction = shiftKey ? 'left' : 'right';
 
-    const canLeafToolbox = Tools.isInitial(currentBlock.tool) && currentBlock.isEmpty;
-    const canLeafInlineToolbar = !currentBlock.isEmpty && !SelectionUtils.isCollapsed && InlineToolbar.opened;
-    const canLeafConversionToolbar = !currentBlock.isEmpty && ConversionToolbar.opened;
+    const canLeafToolbox =
+      Tools.isInitial(currentBlock.tool) && currentBlock.isEmpty;
+    const canLeafInlineToolbar =
+      !currentBlock.isEmpty &&
+      !SelectionUtils.isCollapsed &&
+      InlineToolbar.opened;
+    const canLeafConversionToolbar =
+      !currentBlock.isEmpty && ConversionToolbar.opened;
 
     /**
      * For empty Blocks we show Plus button via Toobox only for initial Blocks
@@ -249,7 +263,9 @@ export default class BlockEvents extends Module {
    * @param {DragEvent} e
    */
   public dragOver(e: DragEvent) {
-    const block = this.Editor.BlockManager.getBlockByChildNode(e.target as Node);
+    const block = this.Editor.BlockManager.getBlockByChildNode(
+      e.target as Node,
+    );
 
     block.dropTarget = true;
   }
@@ -260,7 +276,9 @@ export default class BlockEvents extends Module {
    * @param {DragEvent} e
    */
   public dragLeave(e: DragEvent) {
-    const block = this.Editor.BlockManager.getBlockByChildNode(e.target as Node);
+    const block = this.Editor.BlockManager.getBlockByChildNode(
+      e.target as Node,
+    );
 
     block.dropTarget = false;
   }
@@ -310,7 +328,10 @@ export default class BlockEvents extends Module {
     BlockSelection.copySelectedBlocks();
 
     const selectionPositionIndex = BlockManager.removeSelectedBlocks();
-    Caret.setToBlock(BlockManager.insertInitialBlockAtIndex(selectionPositionIndex, true), Caret.positions.START);
+    Caret.setToBlock(
+      BlockManager.insertInitialBlockAtIndex(selectionPositionIndex, true),
+      Caret.positions.START,
+    );
 
     /** Clear selection */
     BlockSelection.clearSelection(event);
@@ -321,7 +342,14 @@ export default class BlockEvents extends Module {
    * @param {KeyboardEvent} event - keydown
    */
   private enter(event: KeyboardEvent): void {
-    const { BlockManager, Toolbox, BlockSettings, InlineToolbar, ConversionToolbar, Tools } = this.Editor;
+    const {
+      BlockManager,
+      Toolbox,
+      BlockSettings,
+      InlineToolbar,
+      ConversionToolbar,
+      Tools,
+    } = this.Editor;
     const currentBlock = BlockManager.currentBlock;
     const tool = Tools.available[currentBlock.name];
 
@@ -329,11 +357,13 @@ export default class BlockEvents extends Module {
      * Don't handle Enter keydowns when Tool sets enableLineBreaks to true.
      * Uses for Tools like <code> where line breaks should be handled by default behaviour.
      */
-    if (tool
-      && tool[Tools.apiSettings.IS_ENABLED_LINE_BREAKS]
-      && !BlockSettings.opened
-      && !InlineToolbar.opened
-      && !ConversionToolbar.opened) {
+    if (
+      tool &&
+      tool[Tools.apiSettings.IS_ENABLED_LINE_BREAKS] &&
+      !BlockSettings.opened &&
+      !InlineToolbar.opened &&
+      !ConversionToolbar.opened
+    ) {
       return;
     }
 
@@ -367,8 +397,13 @@ export default class BlockEvents extends Module {
     /**
      * If enter has been pressed at the start of the text, just insert paragraph Block above
      */
-    if (this.Editor.Caret.isAtStart && !this.Editor.BlockManager.currentBlock.hasMedia) {
-      this.Editor.BlockManager.insertInitialBlockAtIndex(this.Editor.BlockManager.currentBlockIndex);
+    if (
+      this.Editor.Caret.isAtStart &&
+      !this.Editor.BlockManager.currentBlock.hasMedia
+    ) {
+      this.Editor.BlockManager.insertInitialBlockAtIndex(
+        this.Editor.BlockManager.currentBlockIndex,
+      );
     } else {
       /**
        * Split the Current Block into two blocks
@@ -408,26 +443,51 @@ export default class BlockEvents extends Module {
     const currentBlock = BlockManager.currentBlock;
     const tool = this.Editor.Tools.available[currentBlock.name];
 
+    console.log(currentBlock);
+
     /**
      * Check if Block should be removed by current Backspace keydown
      */
-    if (currentBlock.selected || currentBlock.isEmpty && currentBlock.currentInput === currentBlock.firstInput) {
+    if (
+      currentBlock.selected ||
+      (currentBlock.isEmpty &&
+        currentBlock.currentInput === currentBlock.firstInput) ||
+      (currentBlock.name === 'image' || currentBlock.name === 'embed')
+    ) {
       event.preventDefault();
 
       const index = BlockManager.currentBlockIndex;
 
-      if (BlockManager.previousBlock && BlockManager.previousBlock.inputs.length === 0) {
+      if (
+        BlockManager.previousBlock &&
+        BlockManager.previousBlock.inputs.length === 0
+      ) {
         /** If previous block doesn't contain inputs, remove it */
+        console.log('удаляй предыдущий');
         BlockManager.removeBlock(index - 1);
       } else {
+        console.log('удаляй');
         /** If block is empty, just remove it */
         BlockManager.removeBlock();
       }
+      console.log(BlockManager.currentBlock);
 
       Caret.setToBlock(
         BlockManager.currentBlock,
         index ? Caret.positions.END : Caret.positions.START,
       );
+
+      // if (BlockManager.currentBlock.inputIndex === 0) {
+      //   Caret.setToBlock(
+      //     BlockManager.previousBlock,
+      //     index ? Caret.positions.END : Caret.positions.START,
+      //   );
+      // } else {
+      //   Caret.setToBlock(
+      //     BlockManager.currentBlock,
+      //     index ? Caret.positions.END : Caret.positions.START,
+      //   );
+      // }
 
       /** Close Toolbar */
       this.Editor.Toolbar.close();
@@ -443,12 +503,19 @@ export default class BlockEvents extends Module {
      *
      * But if caret is at start of the block, we allow to remove it by backspaces
      */
-    if (tool && tool[this.Editor.Tools.apiSettings.IS_ENABLED_LINE_BREAKS] && !Caret.isAtStart) {
+    if (
+      tool &&
+      tool[this.Editor.Tools.apiSettings.IS_ENABLED_LINE_BREAKS] &&
+      !Caret.isAtStart
+    ) {
       return;
     }
 
     const isFirstBlock = BlockManager.currentBlockIndex === 0;
-    const canMergeBlocks = Caret.isAtStart && currentBlock.currentInput === currentBlock.firstInput && !isFirstBlock;
+    const canMergeBlocks =
+      Caret.isAtStart &&
+      currentBlock.currentInput === currentBlock.firstInput &&
+      !isFirstBlock;
 
     if (canMergeBlocks) {
       /**
@@ -496,22 +563,26 @@ export default class BlockEvents extends Module {
     }
 
     Caret.createShadow(targetBlock.pluginsContent);
-    BlockManager.mergeBlocks(targetBlock, blockToMerge)
-      .then( () => {
-        /** Restore caret position after merge */
-        Caret.restoreCaret(targetBlock.pluginsContent as HTMLElement);
-        targetBlock.pluginsContent.normalize();
-        Toolbar.close();
-      });
+    BlockManager.mergeBlocks(targetBlock, blockToMerge).then(() => {
+      /** Restore caret position after merge */
+      Caret.restoreCaret(targetBlock.pluginsContent as HTMLElement);
+      targetBlock.pluginsContent.normalize();
+      Toolbar.close();
+    });
   }
 
   /**
    * Handle right and down keyboard keys
    */
   private arrowRightAndDown(event: KeyboardEvent): void {
-    const shouldEnableCBS = this.Editor.Caret.isAtEnd || this.Editor.BlockSelection.anyBlockSelected;
+    const shouldEnableCBS =
+      this.Editor.Caret.isAtEnd || this.Editor.BlockSelection.anyBlockSelected;
 
-    if (event.shiftKey && event.keyCode === _.keyCodes.DOWN && shouldEnableCBS) {
+    if (
+      event.shiftKey &&
+      event.keyCode === _.keyCodes.DOWN &&
+      shouldEnableCBS
+    ) {
       this.Editor.CrossBlockSelection.toggleBlockSelectedState();
       return;
     }
@@ -543,7 +614,9 @@ export default class BlockEvents extends Module {
    * Handle left and up keyboard keys
    */
   private arrowLeftAndUp(event: KeyboardEvent): void {
-    const shouldEnableCBS = this.Editor.Caret.isAtStart || this.Editor.BlockSelection.anyBlockSelected;
+    const shouldEnableCBS =
+      this.Editor.Caret.isAtStart ||
+      this.Editor.BlockSelection.anyBlockSelected;
 
     if (event.shiftKey && event.keyCode === _.keyCodes.UP && shouldEnableCBS) {
       this.Editor.CrossBlockSelection.toggleBlockSelectedState(false);
@@ -582,10 +655,15 @@ export default class BlockEvents extends Module {
    * Cases when we need to close Toolbar
    */
   private needToolbarClosing(event) {
-    const toolboxItemSelected = (event.keyCode === _.keyCodes.ENTER && this.Editor.Toolbox.opened),
-      blockSettingsItemSelected = (event.keyCode === _.keyCodes.ENTER && this.Editor.BlockSettings.opened),
-      inlineToolbarItemSelected = (event.keyCode === _.keyCodes.ENTER && this.Editor.InlineToolbar.opened),
-      conversionToolbarItemSelected = (event.keyCode === _.keyCodes.ENTER && this.Editor.ConversionToolbar.opened),
+    const toolboxItemSelected =
+        event.keyCode === _.keyCodes.ENTER && this.Editor.Toolbox.opened,
+      blockSettingsItemSelected =
+        event.keyCode === _.keyCodes.ENTER && this.Editor.BlockSettings.opened,
+      inlineToolbarItemSelected =
+        event.keyCode === _.keyCodes.ENTER && this.Editor.InlineToolbar.opened,
+      conversionToolbarItemSelected =
+        event.keyCode === _.keyCodes.ENTER &&
+        this.Editor.ConversionToolbar.opened,
       flippingToolbarItems = event.keyCode === _.keyCodes.TAB;
 
     /**
@@ -594,12 +672,13 @@ export default class BlockEvents extends Module {
      * 2. When Toolbar is opened and Tab leafs its Tools
      * 3. When Toolbar's component is opened and some its item selected
      */
-    return !(event.shiftKey
-      || flippingToolbarItems
-      || toolboxItemSelected
-      || blockSettingsItemSelected
-      || inlineToolbarItemSelected
-      || conversionToolbarItemSelected
+    return !(
+      event.shiftKey ||
+      flippingToolbarItems ||
+      toolboxItemSelected ||
+      blockSettingsItemSelected ||
+      inlineToolbarItemSelected ||
+      conversionToolbarItemSelected
     );
   }
 
@@ -611,7 +690,7 @@ export default class BlockEvents extends Module {
    */
   private leafToolboxTools(direction: string): void {
     if (!this.Editor.Toolbar.opened) {
-      this.Editor.Toolbar.open(false , false);
+      this.Editor.Toolbar.open(false, false);
       this.Editor.Toolbar.plusButton.show();
     } else {
       this.Editor.Toolbox.leaf(direction);

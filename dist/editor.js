@@ -11319,7 +11319,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
        * @type {number}
        */
 
-      this.inputIndex = 0;
+      this._inputIndex = 0;
       /**
        * Is fired when DOM mutation has been happened
        */
@@ -11349,11 +11349,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       this.tunes = this.makeTunes();
     }
-    /**
-     * CSS classes for the Block
-     * @return {{wrapper: string, content: string}}
-     */
-
 
     (0, _createClass2["default"])(Block, [{
       key: "call",
@@ -11596,6 +11591,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return wrapper;
       }
     }, {
+      key: "inputIndex",
+      get: function get() {
+        return this._inputIndex;
+      }
+      /**
+       * CSS classes for the Block
+       * @return {{wrapper: string, content: string}}
+       */
+
+    }, {
       key: "inputs",
 
       /**
@@ -11612,6 +11617,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         var content = this.holder;
+        console.log(content);
         var allowedInputTypes = ['text', 'password', 'email', 'number', 'search', 'tel', 'url'];
         var selector = '[contenteditable], textarea, input:not([type]), ' + allowedInputTypes.map(function (type) {
           return "input[type=\"".concat(type, "\"]");
@@ -11634,8 +11640,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
          * If inputs amount was changed we need to check if input index is bigger then inputs array length
          */
 
-        if (this.inputIndex > inputs.length - 1) {
-          this.inputIndex = inputs.length - 1;
+        if (this._inputIndex > inputs.length - 1) {
+          this._inputIndex = inputs.length - 1;
         }
         /**
          * Cache inputs
@@ -11643,7 +11649,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
         this.cachedInputs = inputs;
-        return inputs;
+        return inputs.length ? inputs : ['хуй'];
       }
       /**
        * Return current Tool`s input
@@ -11654,7 +11660,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "currentInput",
       get: function get() {
-        return this.inputs[this.inputIndex];
+        return this.inputs[this._inputIndex];
       }
       /**
        * Set input index to the passed element
@@ -11668,7 +11674,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         });
 
         if (index !== -1) {
-          this.inputIndex = index;
+          this._inputIndex = index;
         }
       }
       /**
@@ -11703,7 +11709,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "nextInput",
       get: function get() {
-        return this.inputs[this.inputIndex + 1];
+        return this.inputs[this._inputIndex + 1];
       }
       /**
        * Return previous Tool`s input or undefined if it doesn't exist
@@ -11714,7 +11720,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "previousInput",
       get: function get() {
-        return this.inputs[this.inputIndex - 1];
+        return this.inputs[this._inputIndex - 1];
       }
       /**
        * Returns Plugins content
@@ -15957,23 +15963,39 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             Caret = _this$Editor6.Caret;
         var currentBlock = BlockManager.currentBlock;
         var tool = this.Editor.Tools.available[currentBlock.name];
+        console.log(currentBlock);
         /**
          * Check if Block should be removed by current Backspace keydown
          */
 
-        if (currentBlock.selected || currentBlock.isEmpty && currentBlock.currentInput === currentBlock.firstInput) {
+        if (currentBlock.selected || currentBlock.isEmpty && currentBlock.currentInput === currentBlock.firstInput || currentBlock.name === 'image' || currentBlock.name === 'embed') {
           event.preventDefault();
           var index = BlockManager.currentBlockIndex;
 
           if (BlockManager.previousBlock && BlockManager.previousBlock.inputs.length === 0) {
             /** If previous block doesn't contain inputs, remove it */
+            console.log('удаляй предыдущий');
             BlockManager.removeBlock(index - 1);
           } else {
+            console.log('удаляй');
             /** If block is empty, just remove it */
+
             BlockManager.removeBlock();
           }
 
-          Caret.setToBlock(BlockManager.currentBlock, index ? Caret.positions.END : Caret.positions.START);
+          console.log(BlockManager.currentBlock);
+          Caret.setToBlock(BlockManager.currentBlock, index ? Caret.positions.END : Caret.positions.START); // if (BlockManager.currentBlock.inputIndex === 0) {
+          //   Caret.setToBlock(
+          //     BlockManager.previousBlock,
+          //     index ? Caret.positions.END : Caret.positions.START,
+          //   );
+          // } else {
+          //   Caret.setToBlock(
+          //     BlockManager.currentBlock,
+          //     index ? Caret.positions.END : Caret.positions.START,
+          //   );
+          // }
+
           /** Close Toolbar */
 
           this.Editor.Toolbar.close();
