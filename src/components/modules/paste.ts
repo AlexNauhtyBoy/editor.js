@@ -142,6 +142,7 @@ export default class Paste extends Module {
    * @param {boolean} isDragNDrop
    */
   public async processDataTransfer(dataTransfer: DataTransfer, isDragNDrop = false): Promise<void> {
+    console.log(dataTransfer);
     const { Sanitizer } = this.Editor;
 
     const types = dataTransfer.types;
@@ -150,7 +151,7 @@ export default class Paste extends Module {
      * In Microsoft Edge types is DOMStringList. So 'contains' is used to check if 'Files' type included
      */
     const includesFiles = types.includes ? types.includes('Files') : (types as any).contains('Files');
-
+    console.log(includesFiles);
     if (includesFiles) {
       await this.processFiles(dataTransfer.files);
       return;
@@ -192,6 +193,7 @@ export default class Paste extends Module {
    * @param {boolean} isHTML - if passed string is HTML, this parameter should be true
    */
   public async processText(data: string, isHTML: boolean = false) {
+    console.log(data);
     const {Caret, BlockManager, Tools} = this.Editor;
     const dataToInsert = isHTML ? this.processHTML(data) : this.processPlain(data);
 

@@ -27,6 +27,11 @@ export interface ToolSettings {
   class: ToolConstructable;
 
   /**
+   * Tool's order
+   */
+  orderNumber?: number;
+
+  /**
    * User configuration object that will be passed to the Tool's constructor
    */
   config?: ToolConfig;

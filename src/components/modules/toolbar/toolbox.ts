@@ -1,7 +1,7 @@
 import Module from '../../__module';
 import $ from '../../dom';
 import _ from '../../utils';
-import {BlockToolConstructable, ToolboxConfig} from '../../../../types';
+import { BlockToolConstructable, ToolboxConfig } from '../../../../types';
 
 /**
  * @class Toolbox
@@ -14,17 +14,16 @@ import {BlockToolConstructable, ToolboxConfig} from '../../../../types';
  *
  */
 export default class Toolbox extends Module {
-
   /**
    * CSS styles
    * @return {{toolbox: string, toolboxButton string, toolboxButtonActive: string,
    * toolboxOpened: string, tooltip: string, tooltipShown: string, tooltipShortcut: string}}
    */
   get CSS() {
-    return  {
+    return {
       toolbox: 'ce-toolbox',
       toolboxButton: 'ce-toolbox__button',
-      toolboxButtonActive : 'ce-toolbox__button--active',
+      toolboxButtonActive: 'ce-toolbox__button--active',
       toolboxOpened: 'ce-toolbox--opened',
       tooltip: 'ce-toolbox__tooltip',
       tooltipShown: 'ce-toolbox__tooltip--shown',
@@ -72,9 +71,9 @@ export default class Toolbox extends Module {
    * HTMLElements used for Toolbox UI
    */
   public nodes: {
-    toolbox: HTMLElement,
-    tooltip: HTMLElement,
-    buttons: HTMLElement[],
+    toolbox: HTMLElement;
+    tooltip: HTMLElement;
+    buttons: HTMLElement[];
   } = {
     toolbox: null,
     tooltip: null,
@@ -111,8 +110,13 @@ export default class Toolbox extends Module {
    * @param {MouseEvent|KeyboardEvent} event
    * @param {string} toolName
    */
-  public toolButtonActivate(event: MouseEvent|KeyboardEvent, toolName: string): void {
-    const tool = this.Editor.Tools.toolsClasses[toolName] as BlockToolConstructable;
+  public toolButtonActivate(
+    event: MouseEvent | KeyboardEvent,
+    toolName: string,
+  ): void {
+    const tool = this.Editor.Tools.toolsClasses[
+      toolName
+    ] as BlockToolConstructable;
 
     this.insertNewBlock(tool, toolName);
   }
@@ -125,7 +129,9 @@ export default class Toolbox extends Module {
       return;
     }
 
-    this.Editor.UI.nodes.wrapper.classList.add(this.CSS.openedToolbarHolderModifier);
+    this.Editor.UI.nodes.wrapper.classList.add(
+      this.CSS.openedToolbarHolderModifier,
+    );
     this.nodes.toolbox.classList.add(this.CSS.toolboxOpened);
 
     this.opened = true;
@@ -138,7 +144,9 @@ export default class Toolbox extends Module {
     this.hideTooltip();
 
     this.nodes.toolbox.classList.remove(this.CSS.toolboxOpened);
-    this.Editor.UI.nodes.wrapper.classList.remove(this.CSS.openedToolbarHolderModifier);
+    this.Editor.UI.nodes.wrapper.classList.remove(
+      this.CSS.openedToolbarHolderModifier,
+    );
 
     this.opened = false;
 
@@ -146,8 +154,9 @@ export default class Toolbox extends Module {
      * Remove active item pointer
      */
     if (this.activeButtonIndex !== -1) {
-      (this.nodes.toolbox.childNodes[this.activeButtonIndex] as HTMLElement)
-        .classList.remove(this.CSS.toolboxButtonActive);
+      (this.nodes.toolbox.childNodes[
+        this.activeButtonIndex
+      ] as HTMLElement).classList.remove(this.CSS.toolboxButtonActive);
 
       this.activeButtonIndex = -1;
     }
@@ -170,9 +179,14 @@ export default class Toolbox extends Module {
    * @param {String} direction - leaf direction, right is default
    */
   public leaf(direction: string = Toolbox.LEAF_DIRECTIONS.RIGHT): void {
-    const childNodes = (Array.from(this.nodes.toolbox.childNodes) as HTMLElement[]);
+    const childNodes = Array.from(
+      this.nodes.toolbox.childNodes,
+    ) as HTMLElement[];
     this.activeButtonIndex = $.leafNodesAndReturnIndex(
-      childNodes, this.activeButtonIndex, direction, this.CSS.toolboxButtonActive,
+      childNodes,
+      this.activeButtonIndex,
+      direction,
+      this.CSS.toolboxButtonActive,
     );
   }
 
@@ -188,12 +202,14 @@ export default class Toolbox extends Module {
    */
   private addTools(): void {
     const tools = this.Editor.Tools.available;
-
-    for (const toolName in tools) {
-      if (tools.hasOwnProperty(toolName)) {
-        this.addTool(toolName, tools[toolName]  as BlockToolConstructable);
-      }
-    }
+    Object.entries(tools)
+      .map(([toolName, tool]) => ({ toolName, tool }))
+      .sort((a, b) => a.tool.orderNumber - b.tool.orderNumber)
+      .forEach((value) => {
+        this.addTool(value.toolName, tools[
+          value.toolName
+        ] as BlockToolConstructable);
+      });
   }
 
   /**
@@ -227,9 +243,11 @@ export default class Toolbox extends Module {
     //   return;
     // }
 
-    const {toolbox: userToolboxSettings = {} as ToolboxConfig} = this.Editor.Tools.getToolSettings(toolName);
+    const {
+      toolbox: userToolboxSettings = {} as ToolboxConfig,
+    } = this.Editor.Tools.getToolSettings(toolName);
 
-    const button = $.make('li', [ this.CSS.toolboxButton ]);
+    const button = $.make('li', [this.CSS.toolboxButton]);
 
     button.dataset.tool = toolName;
     button.innerHTML = userToolboxSettings.icon || toolToolboxSettings.icon;
@@ -242,9 +260,13 @@ export default class Toolbox extends Module {
     /**
      * Add click listener
      */
-    this.Editor.Listeners.on(button, 'click', (event: KeyboardEvent|MouseEvent) => {
-      this.toolButtonActivate(event, toolName);
-    });
+    this.Editor.Listeners.on(
+      button,
+      'click',
+      (event: KeyboardEvent | MouseEvent) => {
+        this.toolButtonActivate(event, toolName);
+      },
+    );
 
     /**
      * Add listeners to show/hide toolbox tooltip
@@ -263,7 +285,11 @@ export default class Toolbox extends Module {
     const toolSettings = this.Editor.Tools.getToolSettings(toolName);
 
     if (toolSettings && toolSettings[this.Editor.Tools.apiSettings.SHORTCUT]) {
-      this.enableShortcut(tool, toolName, toolSettings[this.Editor.Tools.apiSettings.SHORTCUT]);
+      this.enableShortcut(
+        tool,
+        toolName,
+        toolSettings[this.Editor.Tools.apiSettings.SHORTCUT],
+      );
     }
 
     /** Increment Tools count */
@@ -288,7 +314,10 @@ export default class Toolbox extends Module {
    */
   private showTooltip(button: HTMLElement, toolName: string): void {
     const toolSettings = this.Editor.Tools.getToolSettings(toolName);
-    const toolboxSettings = this.Editor.Tools.available[toolName][this.Editor.Tools.apiSettings.TOOLBOX] || {};
+    const toolboxSettings =
+      this.Editor.Tools.available[toolName][
+        this.Editor.Tools.apiSettings.TOOLBOX
+      ] || {};
     const userToolboxSettings = toolSettings.toolbox || {};
     const name = userToolboxSettings.title || toolboxSettings.title || toolName;
 
@@ -318,17 +347,23 @@ export default class Toolbox extends Module {
       if (OS.mac) {
         shortcut = shortcut.replace(/ctrl|cmd/gi, '⌘').replace(/alt/gi, '⌥');
       } else {
-        shortcut = shortcut.replace(/cmd/gi, 'Ctrl').replace(/windows/gi, 'WIN');
+        shortcut = shortcut
+          .replace(/cmd/gi, 'Ctrl')
+          .replace(/windows/gi, 'WIN');
       }
 
-      fragment.appendChild($.make('div', this.CSS.tooltipShortcut, {
-        textContent: shortcut,
-      }));
+      fragment.appendChild(
+        $.make('div', this.CSS.tooltipShortcut, {
+          textContent: shortcut,
+        }),
+      );
     }
 
     const leftOffset = 16;
     const coordinate = button.offsetLeft;
-    const topOffset = Math.floor(this.Editor.BlockManager.currentBlock.holder.offsetHeight / 2);
+    const topOffset = Math.floor(
+      this.Editor.BlockManager.currentBlock.holder.offsetHeight / 2,
+    );
 
     this.nodes.tooltip.innerHTML = '';
     this.nodes.tooltip.appendChild(fragment);
@@ -344,7 +379,11 @@ export default class Toolbox extends Module {
    * @param {String} toolName - Tool name
    * @param {String} shortcut - shortcut according to the ShortcutData Module format
    */
-  private enableShortcut(tool: BlockToolConstructable, toolName: string, shortcut: string) {
+  private enableShortcut(
+    tool: BlockToolConstructable,
+    toolName: string,
+    shortcut: string,
+  ) {
     this.Editor.Shortcuts.add({
       name: shortcut,
       handler: (event: KeyboardEvent) => {
@@ -362,11 +401,11 @@ export default class Toolbox extends Module {
    * @param {String} toolName - Tool name
    */
   private insertNewBlock(tool: BlockToolConstructable, toolName: string) {
-    const {BlockManager, Caret} = this.Editor;
+    const { BlockManager, Caret } = this.Editor;
     /**
      * @type {Block}
      */
-    const {currentBlock} = BlockManager;
+    const { currentBlock } = BlockManager;
 
     console.log('insertNewBlock');
 

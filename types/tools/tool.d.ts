@@ -26,6 +26,8 @@ export interface BaseToolConstructable {
    */
   sanitize?: SanitizerConfig;
 
+  orderNumber?: number;
+
   /**
    * Describe constructor parameters
    */
