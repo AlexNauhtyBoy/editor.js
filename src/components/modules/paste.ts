@@ -526,14 +526,18 @@ export default class Paste extends Module {
         const customConfig = Object.assign({}, toolTags, Sanitizer.getInlineToolsConfig(tool));
 
         content.innerHTML = Sanitizer.clean(content.innerHTML, customConfig);
-
         const event = this.composePasteEvent('tag', {
           data: content,
         });
 
         return {content, isBlock, tool, event};
       })
-      .filter((data) => !$.isNodeEmpty(data.content) || $.isSingleTag(data.content));
+      .filter((data) => {
+        return (
+          !$.isNodeEmpty(data.content) ||
+          $.isSingleTag(data.content)) &&
+          data.content.innerHTML !== 'fake---text---remove---after---copied';
+      });
   }
 
   /**

@@ -102,7 +102,7 @@ export default class Block {
      */
     this.cachedInputs = inputs;
 
-    return inputs.length ? inputs : ['хуй'];
+    return inputs.length ? inputs : [''];
   }
 
   /**
