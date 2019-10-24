@@ -448,11 +448,13 @@ export default class BlockEvents extends Module {
     /**
      * Check if Block should be removed by current Backspace keydown
      */
+    console.log(currentBlock);
+
     if (
       currentBlock.selected ||
       (currentBlock.isEmpty &&
         currentBlock.currentInput === currentBlock.firstInput) ||
-      (currentBlock.name === 'image' || currentBlock.name === 'embed')
+      (currentBlock.name === 'image' || currentBlock.name === 'embed' || currentBlock.name === 'linkTool' || currentBlock.name === 'file')
     ) {
       event.preventDefault();
 
@@ -463,14 +465,12 @@ export default class BlockEvents extends Module {
         BlockManager.previousBlock.inputs.length === 0
       ) {
         /** If previous block doesn't contain inputs, remove it */
-        console.log('удаляй предыдущий');
         BlockManager.removeBlock(index - 1);
       } else {
-        console.log('удаляй');
+        console.log(BlockManager.currentBlock.inputs);
         /** If block is empty, just remove it */
         BlockManager.removeBlock();
       }
-      console.log(BlockManager.currentBlock);
 
       Caret.setToBlock(
         BlockManager.currentBlock,

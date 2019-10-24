@@ -123,6 +123,7 @@ export default class CaretAPI extends Module {
    */
   private focus = (atEnd: boolean = false) => {
     if (atEnd) {
+      console.log(this.Editor.BlockManager.currentBlock);
       return this.setToLastBlock(this.Editor.Caret.positions.END);
     }
 
