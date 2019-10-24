@@ -238,7 +238,9 @@ export default class UI extends Module {
       /**
        * Renew Current Block
        */
-      this.Editor.BlockManager.setCurrentBlockByChildNode(clickedNode);
+
+      // this.Editor.BlockManager.setCurrentBlockByChildNode(clickedNode);
+      console.log(this.Editor.BlockManager.currentBlock);
 
       /**
        * Highlight Current Node

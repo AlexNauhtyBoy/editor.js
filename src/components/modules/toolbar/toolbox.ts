@@ -275,7 +275,7 @@ export default class Toolbox extends Module {
       this.showTooltip(button, toolName);
     });
 
-    this.Editor.Listeners.on(button, 'mouseleave', () => {
+    this.Editor.Listeners.on(button, 'clickoutside', () => {
       this.hideTooltip();
     });
 
