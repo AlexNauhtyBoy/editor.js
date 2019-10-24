@@ -291,17 +291,18 @@ export default class Util {
       innerHTML: text,
     });
 
-    document.body.appendChild(el);
+    if (el) {
+      document.body.appendChild(el);
 
-    const selection = window.getSelection();
-    const range = document.createRange();
-    range.selectNode(el);
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNode(el);
 
-    window.getSelection().removeAllRanges();
-    selection.addRange(range);
-
-    document.execCommand('copy');
-    document.body.removeChild(el);
+      window.getSelection().removeAllRanges();
+      selection.addRange(range);
+      document.execCommand('copy');
+      document.body.removeChild(el);
+    }
   }
 
   /**

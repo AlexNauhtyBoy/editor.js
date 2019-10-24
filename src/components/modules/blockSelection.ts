@@ -26,7 +26,7 @@ export default class BlockSelection extends Module {
       h3: {},
       h4: {},
       h5: {},
-      h6: {},
+      h6: false,
       ol: {},
       ul: {},
       li: {},
@@ -36,9 +36,37 @@ export default class BlockSelection extends Module {
         width: true,
         height: true,
       },
-      a: {
-        href: true,
+      test: {
+        url: true,
       },
+      a: true,
+      b: {},
+      i: {},
+      u: {},
+    };
+  }
+
+  private get sanitizerLinkToolConfig() {
+    return {
+      p: {},
+      h1: {},
+      h2: {},
+      h3: {},
+      h4: {},
+      h5: {},
+      h6: false,
+      ol: {},
+      ul: {},
+      li: {},
+      br: true,
+      linktool: {
+        img: false,
+        url: true,
+      },
+      test: {
+        url: true,
+      },
+      a: true,
       b: {},
       i: {},
       u: {},
@@ -215,13 +243,19 @@ export default class BlockSelection extends Module {
         /**
          * Make <p> tag that holds clean HTML
          */
-        const cleanHTML = this.Editor.Sanitizer.clean(block.holder.innerHTML, this.sanitizerConfig);
+        let cleanHTML = this.Editor.Sanitizer.clean(
+          block.holder.innerHTML,
+          block.name === 'linkTool' ? this.sanitizerLinkToolConfig : this.sanitizerConfig);
         const fragment = $.make('p');
-
+        if (block.name === 'file') {
+          cleanHTML = cleanHTML.replace('Select a file', '');
+        }
         fragment.innerHTML = cleanHTML;
         fakeClipboard.appendChild(fragment);
       });
-
+    const addedOneMoreTag = document.createElement('h6');
+    addedOneMoreTag.innerHTML = 'fake---text---remove---after---copied';
+    fakeClipboard.appendChild(addedOneMoreTag);
     _.copyTextToClipboard(fakeClipboard.innerHTML);
   }
 

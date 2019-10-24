@@ -442,8 +442,6 @@ export default class BlockManager extends Module {
   ): Block {
     const block = this.composeBlock(toolName, data);
 
-    console.log('бонжур');
-
     this._blocks.insert(this.currentBlockIndex, block, true);
 
     return block;
