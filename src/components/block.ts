@@ -37,6 +37,9 @@ import SelectionUtils from './selection';
  * @property pluginsContent - HTML content that returns by Tool's render function
  */
 export default class Block {
+  get inputIndex(): number {
+    return this._inputIndex;
+  }
 
   /**
    * CSS classes for the Block
@@ -68,6 +71,7 @@ export default class Block {
     }
 
     const content = this.holder;
+    console.log(content);
     const allowedInputTypes = ['text', 'password', 'email', 'number', 'search', 'tel', 'url'];
 
     const selector = '[contenteditable], textarea, input:not([type]), '
@@ -89,8 +93,8 @@ export default class Block {
     /**
      * If inputs amount was changed we need to check if input index is bigger then inputs array length
      */
-    if (this.inputIndex > inputs.length - 1) {
-      this.inputIndex = inputs.length - 1;
+    if (this._inputIndex > inputs.length - 1) {
+      this._inputIndex = inputs.length - 1;
     }
 
     /**
@@ -98,7 +102,7 @@ export default class Block {
      */
     this.cachedInputs = inputs;
 
-    return inputs;
+    return inputs.length ? inputs : [''];
   }
 
   /**
@@ -107,7 +111,7 @@ export default class Block {
    * @returns {HTMLElement}
    */
   get currentInput(): HTMLElement | Node {
-    return this.inputs[this.inputIndex];
+    return this.inputs[this._inputIndex];
   }
 
   /**
@@ -119,7 +123,7 @@ export default class Block {
     const index = this.inputs.findIndex((input) => input === element || input.contains(element));
 
     if (index !== -1) {
-      this.inputIndex = index;
+      this._inputIndex = index;
     }
   }
 
@@ -149,7 +153,7 @@ export default class Block {
    * @returns {HTMLElement}
    */
   get nextInput(): HTMLElement {
-    return this.inputs[this.inputIndex + 1];
+    return this.inputs[this._inputIndex + 1];
   }
 
   /**
@@ -158,7 +162,7 @@ export default class Block {
    * @returns {HTMLElement}
    */
   get previousInput(): HTMLElement {
-    return this.inputs[this.inputIndex - 1];
+    return this.inputs[this._inputIndex - 1];
   }
 
   /**
@@ -334,7 +338,7 @@ export default class Block {
    * Focused input index
    * @type {number}
    */
-  private inputIndex = 0;
+  private _inputIndex = 0;
 
   /**
    * Mutation observer to handle DOM mutations

@@ -229,7 +229,7 @@ export default class Tools extends Module {
          * @type {Tool}
          */
         this.toolsClasses[toolName] = (this.config.tools[toolName] as ToolSettings).class;
-
+        this.toolsClasses[toolName].orderNumber = this.config.tools[toolName].orderNumber;
         /**
          * Save Tool's settings
          * @type {ToolSettings}
@@ -281,6 +281,7 @@ export default class Tools extends Module {
    * @param {ChainData.data} data - append tool to available list
    */
   public success(data) {
+    console.log(data);
     this.toolsAvailable[data.toolName] = this.toolsClasses[data.toolName];
   }
 
