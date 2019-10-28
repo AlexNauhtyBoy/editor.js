@@ -313,7 +313,6 @@ export default class Toolbox extends Module {
    * @param {string} toolName
    */
   private showTooltip(button: HTMLElement, toolName: string): void {
-    console.log(button, toolName, 'зачем?');
     const toolSettings = this.Editor.Tools.getToolSettings(toolName);
     const toolboxSettings =
       this.Editor.Tools.available[toolName][
@@ -359,9 +358,6 @@ export default class Toolbox extends Module {
         }),
       );
     }
-
-    console.log(this.Editor.BlockManager);
-
     const leftOffset = 16;
     const coordinate = button.offsetLeft;
     const topOffset = Math.floor(
