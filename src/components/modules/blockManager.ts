@@ -28,6 +28,10 @@ export default class BlockManager extends Module {
     return this._currentBlockIndex;
   }
 
+  public get currentHoveredBlockIndex(): number {
+    return this._currentHoveredBlockIndex;
+  }
+
   /**
    * Set current Block index and fire Block lifecycle callbacks
    * @param newIndex
@@ -41,6 +45,17 @@ export default class BlockManager extends Module {
       this._blocks[newIndex].willSelect();
     }
     this._currentBlockIndex = newIndex;
+  }
+
+  public set currentHoveredBlockIndex(newIndex: number) {
+    // if (this._blocks[this._currentHoveredBlockIndex]) {
+    //   this._blocks[this._currentHoveredBlockIndex].willUnselect();
+    // }
+    //
+    // if (this._blocks[newIndex]) {
+    //   this._blocks[newIndex].willSelect();
+    // }
+    this._currentHoveredBlockIndex = newIndex;
   }
 
   /**
@@ -67,7 +82,9 @@ export default class BlockManager extends Module {
   public get currentBlock(): Block {
     return this._blocks[this.currentBlockIndex];
   }
-
+  public get currentHoveredBlock(): Block {
+    return this._blocks[this.currentHoveredBlockIndex];
+  }
   /**
    * Returns next Block instance
    * @return {Block|null}
@@ -142,6 +159,8 @@ export default class BlockManager extends Module {
    * @type {number}
    */
   private _currentBlockIndex: number = -1;
+
+  private _currentHoveredBlockIndex: number = -1;
 
   /**
    * Proxy for Blocks instance {@link Blocks}
@@ -491,11 +510,20 @@ export default class BlockManager extends Module {
     this.currentBlock.focused = true;
   }
 
+  public hoverCurrentNode(): void {
+    this.clearHovered();
+    this.currentHoveredBlock.hovered = true;
+  }
+
   /**
    * Remove selection from all Blocks
    */
   public clearFocused(): void {
     this.blocks.forEach( (block) => block.focused = false);
+  }
+
+  public clearHovered(): void {
+    this.blocks.forEach( (block) => block.hovered = false);
   }
 
   /**
@@ -523,6 +551,28 @@ export default class BlockManager extends Module {
        */
       this.currentBlockIndex = this._blocks.nodes.indexOf(parentFirstLevelBlock as HTMLElement);
       return this.currentBlock;
+    } else {
+      throw new Error('Can not find a Block from this child Node');
+    }
+  }
+
+  public setHoveredBlockByChildNode(childNode: Node): Block {
+    /**
+     * If node is Text TextNode
+     */
+    if (!$.isElement(childNode)) {
+      childNode = childNode.parentNode;
+    }
+
+    const parentFirstLevelBlock = (childNode as HTMLElement).closest(`.${Block.CSS.wrapper}`);
+
+    if (parentFirstLevelBlock) {
+      /**
+       * Update current Block's index
+       * @type {number}
+       */
+      this.currentHoveredBlockIndex = this._blocks.nodes.indexOf(parentFirstLevelBlock as HTMLElement);
+      return this.currentHoveredBlock;
     } else {
       throw new Error('Can not find a Block from this child Node');
     }

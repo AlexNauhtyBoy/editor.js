@@ -239,13 +239,12 @@ export default class UI extends Module {
        * Renew Current Block
        */
 
-      // this.Editor.BlockManager.setCurrentBlockByChildNode(clickedNode);
-      console.log(this.Editor.BlockManager.currentBlock);
+      this.Editor.BlockManager.setHoveredBlockByChildNode(clickedNode);
 
       /**
        * Highlight Current Node
        */
-      this.Editor.BlockManager.highlightCurrentNode();
+      this.Editor.BlockManager.hoverCurrentNode();
     } catch (e) {
     }
 
@@ -265,27 +264,27 @@ export default class UI extends Module {
      */
     this.Editor.Toolbar.plusButton.hide();
 
-    if (!this.Editor.BlockManager.currentBlock) {
-      this.Editor.BlockManager.insert();
-    }
+    // if (!this.Editor.BlockManager.currentBlock) {
+    //   this.Editor.BlockManager.insert();
+    // }
 
     /**
      * Show the Plus Button if:
      * - Block is an initial-block (Text)
      * - Block is empty
      */
-    const isInitialBlock = this.Editor.Tools.isInitial(this.Editor.BlockManager.currentBlock.tool);
-
-    if (isInitialBlock) {
-      /**
-       * Check isEmpty only for paragraphs to prevent unnecessary tree-walking on Tools with many nodes (for ex. Table)
-       */
-      const isEmptyBlock = this.Editor.BlockManager.currentBlock.isEmpty;
-
-      if (isEmptyBlock) {
-        this.Editor.Toolbar.plusButton.show();
-      }
-    }
+    // const isInitialBlock = this.Editor.Tools.isInitial(this.Editor.BlockManager.currentBlock.tool);
+    //
+    // if (isInitialBlock) {
+    //   /**
+    //    * Check isEmpty only for paragraphs to prevent unnecessary tree-walking on Tools with many nodes (for ex. Table)
+    //    */
+    //   const isEmptyBlock = this.Editor.BlockManager.currentBlock.isEmpty;
+    //
+    //   if (isEmptyBlock) {
+    //     this.Editor.Toolbar.plusButton.show();
+    //   }
+    // }
   }
 
   /**
