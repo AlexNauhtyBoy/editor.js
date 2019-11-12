@@ -240,22 +240,30 @@ export default class BlockSelection extends Module {
     const fakeClipboard = $.make('div');
 
     this.selectedBlocks.forEach((block) => {
-        /**
-         * Make <p> tag that holds clean HTML
-         */
-        let cleanHTML = this.Editor.Sanitizer.clean(
-          block.holder.innerHTML,
-          block.name === 'linkTool' ? this.sanitizerLinkToolConfig : this.sanitizerConfig);
-        const fragment = $.make('p');
-        if (block.name === 'file') {
-          cleanHTML = cleanHTML.replace('Select a file', '');
-        }
-        fragment.innerHTML = cleanHTML;
-        fakeClipboard.appendChild(fragment);
-      });
-    const addedOneMoreTag = document.createElement('h6');
-    addedOneMoreTag.innerHTML = 'fake---text---remove---after---copied';
-    fakeClipboard.appendChild(addedOneMoreTag);
+      /**
+       * Make <p> tag that holds clean HTML
+       */
+      let cleanHTML = this.Editor.Sanitizer.clean(
+        block.holder.innerHTML,
+        block.name === 'linkTool' ? this.sanitizerLinkToolConfig : this.sanitizerConfig);
+      const fragment = $.make('p');
+      if (block.name === 'file') {
+        cleanHTML = cleanHTML.replace('Select a file', '');
+      }
+      fragment.innerHTML = cleanHTML;
+      fakeClipboard.appendChild(fragment);
+    });
+    console.log(this.selectedBlocks);
+    if (
+      this.selectedBlocks.length === 1 &&
+      (this.selectedBlocks[0].name === 'file' ||
+      this.selectedBlocks[0].name === 'linkTool')
+    ) {
+      const addedOneMoreTag = document.createElement('h6');
+      addedOneMoreTag.innerHTML = 'fake---text---remove---after---copied';
+      fakeClipboard.appendChild(addedOneMoreTag);
+    }
+
     _.copyTextToClipboard(fakeClipboard.innerHTML);
   }
 
